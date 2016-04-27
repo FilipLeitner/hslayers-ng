@@ -13,13 +13,13 @@
         <div class="panel-body">
             <div ng-if="observations.length > 0">
                 <hr>
-                <label>Ten most recent observations</label>
+                <label>Recent observations</label>
                 <table class="table table-condensed">
                     <thead>
                         <tr>
                             <th>Time</th>
                             <th class="text-right">Temperature</th>
-                            <th class="text-right">Percipitation</th>
+                            <th class="text-right">Precipitation</th>
                             <th class="text-right">Speed</th>
                         </tr>
                     </thead>
@@ -27,12 +27,14 @@
                         <tr ng-repeat="o in observations">
                             <td>{{o.time| date : 'HH:mm:ss'}}</td>
                             <td class="text-right">{{o.temperature| number : 1}} &deg;C</td>
-                            <td class="text-right">{{o.percipitation}} mm</td>
+                            <td class="text-right">{{o.precipitation}} mm</td>
                             <td class="text-right">{{o.speed}} m/s</td>
                         </tr>
                     </tbody>
                 </table>
+                <hr>
             </div>
+            <div id="chart"></div>
         </div>
     </div>
 </div>

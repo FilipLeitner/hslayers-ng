@@ -44,12 +44,12 @@
         </a>
 
         <a href="#" class="sidebar-item list-group-item" ng-if="Core.exists('hs.routing.controller')" ng-click="setMainPanel('routing')" ng-class="{active: Core.mainpanel == 'routing'}">
-            <span class="menu-icon glyphicon glyphicon-road"></span>
+            <span class="menu-icon glyphicon glyphicon-road" data-toggle="tooltip" data-container="body" data-placement="auto" ></span>
             <span class="sidebar-item-title">Routing</span>
         </a>
 
         <a href="#" class="sidebar-item list-group-item" ng-if="Core.exists('hs.tracking.controller')" ng-click="setMainPanel('tracking')" ng-class="{active: Core.mainpanel == 'tracking'}">
-            <span class="menu-icon glyphicon glyphicon-screenshot"></span>
+            <span class="menu-icon glyphicon glyphicon-screenshot" data-toggle="tooltip" data-container="body" data-placement="auto" ></span>
             <span class="sidebar-item-title">Tracking</span>
         </a>
         

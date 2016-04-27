@@ -10,7 +10,8 @@ define(['angular',
     'core'
 ], function (angular,
         ol,
-        s4a) {
+        s4a,
+        dc) {
     angular.module('hs.tracking', ['hs.map', 'hs.core'])
             .directive('hs.tracking.directive', function () {
                 return {
@@ -76,6 +77,46 @@ define(['angular',
                     });
 
                     /**
+                     * Draw or redraw diagram on load
+                     * 
+                     */
+                    var drawChart = function () {
+
+                        console.log('draw diagram');
+
+                        console.log($scope.observations);
+
+                        var cf = crossfilter($scope.observations);
+
+                        var dimTime = cf.dimension(function (d) {
+                            return d.time;
+                        });
+
+                        var observationsByGroup = dimTime.group().reduceSum(function (d) {
+                            return d.temperature;
+                        })
+
+                        console.log(observationsByGroup.all());
+
+                        var chart = dc.lineChart("#chart")
+                                .width(768)
+                                .height(480)
+                                .x(d3.time.scale())
+                                .y(d3.scale.linear().domain([-15, 30]))
+                                .xUnits(d3.time.seconds)
+                                .margins({left: 50, top: 10, right: 10, bottom: 20})
+                                .renderArea(true)
+                                .brushOn(false)
+                                .clipPadding(10)
+                                .yAxisLabel("Temperature")
+                                .dimension(dimTime)
+                                .group(observationsByGroup);
+
+                        dc.renderAll();
+
+                    };
+
+                    /**
                      * Add feature to source of vector layer
                      * 
                      * @param {type} lonLatArray
@@ -112,28 +153,31 @@ define(['angular',
                                 var therm = SensLog.getLastObservation(3, 21, 'sdi4apps');
                                 var rain = SensLog.getLastObservation(3, 22, 'sdi4apps');
                                 var speed = SensLog.getLastObservation(3, 23, 'sdi4apps');
-                                jQuery.when(therm, rain, speed)
-                                        .done(function (t1, p1, s1) {
+                                jQuery.when(therm, rain, speed).done(function (t1, p1, s1) {
 
-                                            // If more than 10 elements in array, remove first
-                                            // before adding new
-                                            if ($scope.observations.length >= 10) {
-                                                $scope.observations.shift();
-                                            }
-                                            // Add sensor observations to array
-                                            $scope.observations.push({
-                                                time: SensLog.toJsDate(t1.time),
-                                                temperature: t1.value,
-                                                percipitation: p1.value,
-                                                speed: s1.value
-                                            });
+                                    // If more than 10 elements in array, remove first
+                                    // before adding new
+                                    if ($scope.observations.length >= 10) {
+                                        $scope.observations.shift();
+                                    }
 
-                                            // Digest scope if not already doing so
-                                            if (!$scope.$$phase) {
-                                                $scope.$digest();
-                                            }
+                                    // Add sensor observations to array
+                                    $scope.observations.push({
+                                        time: SensLog.toJsDate(t1.time),
+                                        temperature: t1.value,
+                                        precipitation: p1.value,
+                                        speed: s1.value
+                                    });
 
-                                        });
+                                    // Draw chart
+                                    drawChart();
+
+                                    // Digest scope if not already doing so
+                                    if (!$scope.$$phase) {
+                                        $scope.$digest();
+                                    }
+
+                                });
                             }
                         });
                     };
@@ -144,6 +188,7 @@ define(['angular',
                      */
                     $scope.startTracking = function () {
                         $scope.isTracking = true;
+                        lastObservationDate = null;
                         loadValues();
                         if (!$scope.$$phase) {
                             $scope.$digest();

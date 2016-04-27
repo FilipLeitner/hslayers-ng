@@ -4,7 +4,7 @@ var hsl_path = '../../';
 
 var gitsha = $.ajax({
     type: "GET",
-    url: hsl_path + 'gitsha.js',
+    url: hsl_path + 'gitsha.js?' + new Date().getTime().toString(),
     async: false
 }).responseText;
 
