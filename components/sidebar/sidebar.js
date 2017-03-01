@@ -24,7 +24,7 @@ define(['angular', 'map', 'core', 'permalink', 'ngcookies'],
                             },
                             function(value) {
                                 setTimeout(function() {
-                                    scope.Core.updateMapSize();
+                                    scope.Core.updateMapSize(true);
                                 }, 0)
                                 scope.$emit('sidebar_change', scope.Core.sidebarExpanded);
                             }, true
@@ -63,7 +63,7 @@ define(['angular', 'map', 'core', 'permalink', 'ngcookies'],
                  * @function toggleSidebar
                  */
                 $scope.toggleSidebar = function() {
-                    $scope.Core.sidebarExpanded = !$scope.Core.sidebarExpanded;
+                    Core.sidebarExpanded = !Core.sidebarExpanded;
                 };
 
                 $scope.$emit('scope_loaded', "Sidebar");

@@ -170,16 +170,32 @@ define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'drag', 'api'
                          * @memberOf Core
                          * Change size of map element in application. Size should be rest of window width next to sidebar
                          */
-                        updateMapSize: function() {
+                        updateMapSize: function(sidebarChange) {
                             var element = $("div[hs]");
                             var map = $("#map");
                             var sidebarElem = $('.panelspace');
+                            if(angular.isDefined(OlMap.map)) {
+                                var ext = OlMap.map.getView().calculateExtent();
+                            }
                             if (element.width() > sidebarElem.width()) {
                                 map.width(element.width() - sidebarElem.width());
                             } else {
                                 map.width(0);
                             }
-                            if(angular.isDefined(OlMap.map)) OlMap.map.updateSize();
+                            
+                            if(angular.isDefined(OlMap.map)) { 
+                                if (angular.isDefined(sidebarChange) && sidebarChange == true) { 
+                                    var newExt = OlMap.map.getView().calculateExtent();
+                                    var diff = (ext[0] - newExt[0]);
+                                    var center = OlMap.map.getView().getCenter();
+                                    if (me.sidebarRight == true) 
+                                        center[0] += diff;
+                                    else 
+                                        center[0] -= diff;                                        
+                                }
+                                OlMap.map.updateSize();
+                            }
+
                         },
                         /**
                          * @function panelVisible
@@ -526,7 +542,7 @@ define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'drag', 'api'
                         element[0].style.width = size.width + "px";
                         $("#map").height(size.height);
                         me.updateMapSize();
-                        if(OlMap.map) OlMap.map.updateSize();
+                        //if(OlMap.map) OlMap.map.updateSize();
                     }
                     return me;
                 },
