@@ -146,6 +146,7 @@ define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'drag', 'api'
                             } else {
                                 me.sidebarExpanded = true;
                                 me.sidebarLabels = false;
+                                me.updateMapSize(true);
                             }
                             me.mainpanel = which;
                             if (typeof queryable == 'undefined')
@@ -177,12 +178,15 @@ define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'drag', 'api'
                             if(angular.isDefined(OlMap.map)) {
                                 var ext = OlMap.map.getView().calculateExtent();
                             }
-                            if (element.width() > sidebarElem.width()) {
-                                map.width(element.width() - sidebarElem.width());
-                            } else {
-                                map.width(0);
+                            if (me.sidebarExpanded == true) {
+                                if (angular.element($window).width() >= 768) 
+                                    map.width(element.width() - 400);
+                                else 
+                                    map.width(element.width() - 300);
                             }
-                            
+                            else {
+                                map.width(element.width() - 48);
+                            }
                             if(angular.isDefined(OlMap.map)) { 
                                 if (angular.isDefined(sidebarChange) && sidebarChange == true) { 
                                     var newExt = OlMap.map.getView().calculateExtent();

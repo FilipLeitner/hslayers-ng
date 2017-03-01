@@ -18,17 +18,17 @@ define(['angular', 'map', 'core', 'permalink', 'ngcookies'],
                     link: function(scope, element, attrs) {
                         if (angular.isDefined(scope.Core.config.createExtraMenu))
                             scope.Core.config.createExtraMenu($compile, scope, element);
-                        scope.$watch(
+                        /*scope.$watch(
                             function() {
                                 return [scope.Core.sidebarExpanded, angular.element('.panelspace').width()]
-                            },
+                            }/*,
                             function(value) {
                                 setTimeout(function() {
                                     scope.Core.updateMapSize(true);
                                 }, 0)
                                 scope.$emit('sidebar_change', scope.Core.sidebarExpanded);
                             }, true
-                        )
+                        )*/
                     }
                 };
             }])
@@ -64,6 +64,7 @@ define(['angular', 'map', 'core', 'permalink', 'ngcookies'],
                  */
                 $scope.toggleSidebar = function() {
                     Core.sidebarExpanded = !Core.sidebarExpanded;
+                    Core.updateMapSize(true);
                 };
 
                 $scope.$emit('scope_loaded', "Sidebar");
