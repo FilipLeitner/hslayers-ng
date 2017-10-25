@@ -671,6 +671,10 @@
     background-color: #eee
 }
 
+.ows-capabilities .form-group {
+    height: 34px;
+}
+
 /************/
 /** STYLER **/
 /************/
