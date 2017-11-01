@@ -1,4 +1,5 @@
 'use strict';
+//hack - modules not loaded correctly with require
 require(['tinycolor'], function(tinycolor) {
     window.tinycolor = tinycolor;
 });
@@ -6,7 +7,7 @@ require(['clipboard'], function(clipboard) {
     window.Clipboard = clipboard;
   });
 
-define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', 'search', 'measure', 'permalink', 'core', 'api', 'compositions', 'angular-gettext', 'bootstrap', 'translations', 'ngMaterial', 'mdColorPicker', 'ngclipboard', 'matCore','matSearch','mainToolbar', 'bottomToolbar', 'sidepanel', 'matAddLayer', 'matBasemap', 'matLayerManager', 'matShareMap', 'matMeasure', 'matQuery'],
+define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', 'search', 'measure', 'permalink', 'core', 'api', 'compositions', 'ows','angular-gettext', 'bootstrap', 'translations', 'ngMaterial', 'mdColorPicker', 'ngclipboard', 'matCore','matSearch','mainToolbar', 'bottomToolbar', 'sidepanel', 'matAddLayer', 'matBasemap', 'matLayerManager', 'matShareMap', 'matMeasure', 'matQuery', 'matComposition', 'matStatusCreator'],
 
     function (angular, ol, toolbar, layermanager) {
         var module = angular.module('hs', [
@@ -18,6 +19,7 @@ define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', '
             'hs.core', 'hs.permalink',
             'hs.api',
             'hs.compositions',
+            'hs.ows',
             'gettext',
             'hs.sidebar',
             'ngMaterial',
@@ -33,12 +35,14 @@ define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', '
             'hs.material.layerManager',
             'hs.material.shareMap',
             'hs.material.measure',
-            'hs.material.query'
+            'hs.material.query',
+            'hs.material.composition',
+            'hs.material.statusCreator'
         ]);
 
         module.directive('hs', ['hs.map.service', 'Core', '$timeout', function (OlMap, Core, $timeout) {
             return {
-                templateUrl: 'skeleton.html',
+                templateUrl: hsl_path + 'materialComponents/skeleton.html',
                 link: function (scope, element) {
                     Core.init(element, {
                         innerElement: '#map-container'
@@ -158,22 +162,23 @@ define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', '
                     "title": "Default",
                     "type": "default",
                     "editable": false,
-                    "url": 'http://youth.sdi4apps.eu'
-                },
-                "compositions_catalogue": {
-                    "title": "Compositions catalogue",
-                    "type": "compositions_catalogue",
-                    "editable": true,
-                    "url": 'http://foodie-dev.wirelessinfo.cz'
-                },
-                "status_manager": {
-                    "title": "Status manager",
-                    "type": "status_manager",
-                    "editable": true,
-                    "url": 'http://foodie-dev.wirelessinfo.cz'
-                },
+                    "url": 'http://atlas.kraj-lbc.cz'
+                }
             },
+            datasources: [{
+                title: "Catalogue",
+                url: "/php/metadata/csw/",
+                language: 'eng',
+                type: "micka",
+                code_list_url: '/php/metadata/util/codelists.php?_dc=1440156028103&language=cze&page=1&start=0&limit=25&filter=%5B%7B%22property%22%3A%22label%22%7D%5D'
+            }],
+            'catalogue_url': caturl || '/php/metadata/csw/',
+            'compositions_catalogue_url': caturl || '/php/metadata/csw/',
+            status_manager_url: '/wwwlibs/statusmanager/index.php',
             queryPoint: 'notWithin',
+            query: {
+                multi: true
+            },
             mainToolbar: {
                 addLayer: true
             }
@@ -184,6 +189,7 @@ define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', '
                 $scope.hsl_path = hsl_path; //Get this from hslayers.js file
                 $scope.Core = Core;
                 Core.setMainPanel("",true);
+                Core.setLanguage('cs');
                 //Compo.loadComposition("http://www.opentransportnet.eu/wwwlibs/statusmanager2/index.php?request=load&id=219e90c6-ba6d-43a4-8dd6-3ea84f2730c4", false);
             }
         ]);
