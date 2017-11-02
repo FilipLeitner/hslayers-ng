@@ -34,7 +34,7 @@ define(['angular', 'ol','ngMaterial'],
                             item: 'addLayer',
                             tooltip: gettext('Add layer to map'),
                             icon: 'add box',
-                            show:  (angular.isDefined(config.mainToolbar) && angular.isDefined(config.mainToolbar.addLayer)) ? config.mainToolbar.addLayer : false,
+                            show:  (angular.isDefined(config.mainToolbar) && angular.isDefined(config.mainToolbar.addLayer)) ? config.mainToolbar.addLayer : true,
                             menu: [
                                 {
                                     item: 'addLayerWebservice',
@@ -56,7 +56,7 @@ define(['angular', 'ol','ngMaterial'],
                             item: 'composition',
                             tooltip: gettext('Browse map compositions'),
                             icon: 'view_list',
-                            show:  (angular.isDefined(config.mainToolbar) && angular.isDefined(config.mainToolbar.addLayer)) ? config.mainToolbar.addLayer : false
+                            show:  (angular.isDefined(config.mainToolbar) && angular.isDefined(config.mainToolbar.addLayer)) ? config.mainToolbar.addLayer : true
                         }
                     ];
 

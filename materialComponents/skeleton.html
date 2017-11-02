@@ -1,4 +1,11 @@
-<div layout="column" style="height:100%;" ng-controller="MatCore" id="hsContainer">
+<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/prefixes/materialPrefix2.css">
+<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}node_modules/md-color-picker/dist/mdColorPicker.css">
+<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/ol.css" type="text/css">
+<link link-on-load href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet">
+<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/prefixes/materialAppPrefix.css">
+<div style="height:100%;" id="hsContainer">
+<div layout="column" style="height:100%;" ng-controller="MatCore" >
     <md-toolbar class="md-hue-2">
         <div class="md-toolbar-tools">
             <h2 flex="nogrow" md-truncate>Vodstvo Libereckého kraje</h2>
@@ -6,15 +13,6 @@
                 <hs.material.search.directive></hs.material.search.directive>
             </div>
             <div flex=""></div>
-            <!--
-            <div flex="nogrow">
-                <md-button class="md-raised md-warn md-hue-2" aria-label="Změnit mapu">
-                    Změnit mapu
-                </md-button>
-                <md-button class="md-raised md-warn md-hue-2" aria-label="Herní atlas">
-                    Herní atlas
-                </md-button>
-            </div>-->
         </div>
     </md-toolbar>
 
@@ -67,4 +65,5 @@
         <hs.material.sidepanel.panelright.directive></hs.material.sidepanel.panelright.directive>
         <iframe id="invisible_popup" style="display:block; z-index:12122;left:-10000px; position:absolute"></iframe>
     </section>
+</div>
 </div>
