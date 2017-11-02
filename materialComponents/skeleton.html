@@ -1,15 +1,15 @@
-<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/prefixes/materialPrefix2.css">
+<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/prefixes/materialPrefix3.css">
 <link link-on-load rel="stylesheet" ng-href="{{hsl_path}}node_modules/md-color-picker/dist/mdColorPicker.css">
 <link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/ol.css" type="text/css">
 <link link-on-load href="https://fonts.googleapis.com/icon?family=Material+Icons"
     rel="stylesheet">
-<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/prefixes/materialAppPrefix.css">
-<div style="height:100%;" id="hsContainer">
+<link link-on-load rel="stylesheet" ng-href="{{hsl_path}}css/prefixes/materialAppPrefix3.css">
+<div style="height:100%;" id="hsContainer" class="hs-container">
 <div layout="column" style="height:100%;" ng-controller="MatCore" >
     <md-toolbar class="md-hue-2">
         <div class="md-toolbar-tools">
-            <h2 flex="nogrow" md-truncate>Vodstvo Libereckého kraje</h2>
-            <div ng-controller='hs.material.search.controller' flex="25" flex-offset="5">
+            <h2 ng-show="title.lenght > 0" flex="30" md-truncate>{{title}}</h2>
+            <div ng-controller='hs.material.search.controller' flex="40" flex-offset="10">
                 <hs.material.search.directive></hs.material.search.directive>
             </div>
             <div flex=""></div>

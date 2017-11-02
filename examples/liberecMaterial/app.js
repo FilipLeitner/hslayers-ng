@@ -65,6 +65,17 @@ define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', '
             };
         }]);
 
+        module.directive('linkOnLoad', ['$parse', function ($parse) {
+            return {
+              restrict: 'A',
+              link: function (scope, elem, attrs) {
+                elem.on('load', function (event) {
+                    scope.$emit("Core_sizeChanged");
+                });
+              }
+            };
+        }]);
+
         var caturl = "/php/metadata/csw/index.php";
 
         module.value('config', {
@@ -190,7 +201,6 @@ define(['angular', 'ol', 'sidebar', 'toolbar', 'layermanager', 'map', 'query', '
                 $scope.Core = Core;
                 Core.setMainPanel("",true);
                 Core.setLanguage('cs');
-                //Compo.loadComposition("http://www.opentransportnet.eu/wwwlibs/statusmanager2/index.php?request=load&id=219e90c6-ba6d-43a4-8dd6-3ea84f2730c4", false);
             }
         ]);
 

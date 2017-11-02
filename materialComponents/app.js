@@ -93,9 +93,45 @@ define(['angular', 'ol', 'layermanager', 'map', 'query', 'search', 'measure', 'p
 							}),
 							title: "Liberec",
 							BoundingBox : [{crs:"EPSG:3857", extent: [1587156, 6509276, 1735558, 6635340]}]
-						}),
+                        }),
+                        new ol.layer.Tile({
+                            source: new ol.source.OSM({
+                                wrapX: false
+                            }),
+                            title: "OSM",
+                            base: true,
+                            img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Osm-200804-praha.png/350px-Osm-200804-praha.png"
+                        })
                     ],
                 }),
+                new ol.layer.Group({
+                    title: "Vrstvy",
+                    layers: [
+                        new ol.layer.Vector({
+                            title: "Sídla",
+                            source: new ol.source.Vector({
+                                format: new ol.format.GeoJSON(),
+                                url: hsl_path + 'examples/liberecMaterial/data/sidla.geojson'
+                            }),
+                            path: "Libe"
+                        }),
+                        new ol.layer.Vector({
+                            title: "Horské kóty",
+                            source: new ol.source.Vector({
+                                format: new ol.format.GeoJSON(),
+                                url: hsl_path + 'examples/liberecMaterial/data/koty.geojson'
+                            }),
+                            path: "Libe"
+                        }),
+                        new ol.layer.Vector({
+                            title: "Vodni plochy",
+                            source: new ol.source.Vector({
+                                format: new ol.format.GeoJSON(),
+                                url: hsl_path + 'examples/liberecMaterial/data/plochy.geojson'
+                            })
+                        })
+                    ]
+                })
             ],
             default_view: new ol.View({
                 center: [1661357, 6572308], //Latitude longitude    to Spherical Mercator

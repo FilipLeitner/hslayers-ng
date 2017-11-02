@@ -320,6 +320,7 @@ define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'olPopup'],
                         }
                         if (infoFormat.indexOf("html") > 0) {
                             if (response.length <= 1) return;
+                            if (!(typeof response == 'string' || response instanceof String)) return;
                             Base.fillIframeAndResize($("#invisible_popup"), response, true);
                             if (layer.get('popupClass') != undefined ) Base.popupClassname = "ol-popup " + layer.get('popupClass');
                         }

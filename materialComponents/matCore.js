@@ -38,6 +38,12 @@ define(['angular', 'core', 'ngMaterial'],
                         return Sidenav.isSidenavOpened(id);
                     }
 
+                    if (angular.isDefined(config.title)) $scope.title = config.title;
+
+                    $scope.$on('compositions.composition_loaded', function(e,response){
+                        $scope.title = response.title || response.data.title;
+                    });
+
                     $scope.changeZoom = function (zoomIn) {
                         var view = OlMap.map.getView();
                         var zoom = view.getZoom();
