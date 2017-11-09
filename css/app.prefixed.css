@@ -37,6 +37,14 @@
   font-style: normal;
 }
 
+#page-wrapper .list-group {
+    margin: 0 0 20px 0;
+}
+#page-wrapper .modal {
+    background-color: rgba(0, 0, 0, 0);
+    width: auto;
+    margin-left: 0px;
+}
 #page-wrapper .sb-left div#map {
     margin-left: 48px;
 }
