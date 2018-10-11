@@ -63,9 +63,7 @@ define(['angular', 'app', 'permalink', 'ol'], function (angular, app, permalink,
              */
             this.init = function () {
                 me.map = new ol.Map({
-                    controls: ol.control.defaults({
-                        zoom: false
-                    }),
+                    controls: me.controls,
                     target: 'map',
                     interactions: [],
                     view: cloneView(config.default_view)
@@ -99,8 +97,6 @@ define(['angular', 'app', 'permalink', 'ol'], function (angular, app, permalink,
                 angular.forEach(me.interactions, function (value, key) {
                     me.map.addInteraction(value);
                 });
-                //me.map.addControl(new ol.control.ZoomSlider());
-                // me.map.addControl(new ol.control.ScaleLine());
 
                 me.repopulateLayers();
                 /**
@@ -131,6 +127,21 @@ define(['angular', 'app', 'permalink', 'ol'], function (angular, app, permalink,
              * @description Duration of added interactions animation. (400 ms used, default in OpenLayers is 250 ms)
              */
             this.duration = 400;
+
+            /**
+             * @ngdoc property
+             * @name hs.map.service#controls
+             * @public
+             * @type {Object} 
+             * @description Set of default map controls used in HSLayers, may be loaded from config file
+             */
+            var defaultDesktopControls = ol.control.defaults();
+            defaultDesktopControls.push(new ol.control.ScaleLine());
+            var defaultMobileControls = ol.control.defaults({
+                zoom: false
+            });
+            this.controls =  angular.isDefined(config.mapControls) ? config.mapControls :
+                !!window.cordova ? defaultMobileControls : defaultDesktopControls;
 
             /**
              * @ngdoc property
