@@ -2,10 +2,10 @@
  * @namespace hs.query
  * @memberOf hs
  */
-define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 'ol.popup'],
+define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'ol.popup'],
 
     function (angular, ol) {
-        angular.module('hs.query', ['hs.map', 'hs.core', 'ngSanitize', 'ngMaterial'])
+        angular.module('hs.query', ['hs.map', 'hs.core', 'ngSanitize'])
             /**
             * @ngdoc directive
             * @name hs.query.directiveInfopanel
@@ -493,8 +493,8 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                         $rootScope.$broadcast('queryVectorResult');
                     }
                 }])
-            .controller('hs.query.controller', ['$scope', '$rootScope', 'hs.map.service', 'hs.query.baseService', 'hs.query.wmsService', 'hs.query.vectorService', 'Core', 'config', '$mdDialog', '$mdToast',
-                function ($scope, $rootScope ,OlMap, Base, WMS, Vector, Core, config, $mdDialog, $mdToast) {
+            .controller('hs.query.controller', ['$scope', '$rootScope', 'hs.map.service', 'hs.query.baseService', 'hs.query.wmsService', 'hs.query.vectorService', 'Core', 'config',
+                function ($scope, $rootScope ,OlMap, Base, WMS, Vector, Core, config) {
                     var popup = new ol.Overlay.Popup();
 
                     if (OlMap.map) 
@@ -503,46 +503,15 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                         $rootScope.$on('map.loaded', function () {
                             OlMap.map.addOverlay(popup);
                         });
-
-                    $scope.showQueryDialog = function(ev) {
-                        $mdDialog.show({
-                            scope: this,
-                            preserveScope: true,
-                            templateUrl: config.infopanel_template || `${hsl_path}components/query/partials/infopanel${config.design || ''}.html`,
-                            parent: angular.element(document.body),
-                            targetEvent: ev,
-                            clickOutsideToClose: true
-                        })
-                        .then(function() {
-                            console.log("Closed.");
-                        }, function() {
-                            console.log("Cancelled.");
-                        });
-                    };
-
-                    $scope.cancelQueryDialog = function() {
-                        $mdDialog.cancel();
-                    };
                     
                     $scope.data = Base.data;
 
                     $rootScope.$on('queryStatusChanged', function() {
                         if (Base.queryActive) {
-                            $scope.deregisterVectorQuery = $scope.$on('queryClicked', function(e) {
-                                if (config.design === 'md' && $scope.data.groups.length === 0) {
-                                    $mdToast.show(
-                                        $mdToast.simple()
-                                            .textContent("No images matched the query.")
-                                            // .position(pinTo )
-                                            // .hideDelay(3000)
-                                    );
-                                }
-                                if (config.design === 'md' && $scope.data.groups.length > 0) {
-                                    $scope.showQueryDialog(e);
-                                } else {                            
+                            $scope.deregisterVectorQuery = $scope.$on('queryClicked', function(e) { 
                                     popup.hide();
                                     if (['layermanager', '', 'permalink'].indexOf(Core.mainpanel) >= 0 || (Core.mainpanel == "info" && Core.sidebarExpanded == false)) Core.setMainPanel('info');
-                                }
+                                
                             });
 
                             $scope.deregisterWmsQuery = $scope.$on('queryWmsResult', function(e,coordinate) {

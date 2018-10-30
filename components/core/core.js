@@ -145,9 +145,9 @@ if (require.config) require.config({
     ]
 });
 
-define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'drag', 'api', 'proj4', 'layout'],
+define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'proj4'],
     function(angular, proj4) {
-        angular.module('hs.core', ['hs.map', 'gettext', 'gettext', 'hs.drag', 'hs.layout', 'hs.api'])
+        angular.module('hs.core', ['hs.map', 'gettext', 'gettext'])
             /**
              * @module hs.core
              * @name Core
