@@ -582,7 +582,9 @@ define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'proj4'],
                         fullScreenMap: function (element) {
                             $("html").css('overflow', 'hidden');
                             $("html").css('height', '100%');
+                            $('html').css('width', '100%');
                             $('body').css('height', '100%');
+                            $('body').css('width', '100%');
                             me.sizeOptions.element = element;
                             me.sizeOptions.selector = element.parent();
                             me.initSizeListeners();
