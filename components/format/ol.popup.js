@@ -60,6 +60,10 @@ define(['ol'], function (ol) {
             that.container.style.display = 'none';
             that.closer.blur();
             evt.preventDefault();
+
+            var event = document.createEvent('Event');
+            event.initEvent('ol-popup-closed', true, true);
+            that.closer.dispatchEvent(event);
         }, false);
 
         this.content = document.createElement('div');

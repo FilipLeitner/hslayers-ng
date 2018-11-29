@@ -159,11 +159,13 @@ define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'ol.popup'],
                     }
 
                     this.activateQueries = function () {
+                        if (me.queryActive) return;
                         me.queryActive = true;
                         map.addLayer(me.queryLayer);
                         $rootScope.$broadcast('queryStatusChanged');
                     };
                     this.deactivateQueries = function () {
+                        if (!me.queryActive) return;
                         me.queryActive = false;
                         map.removeLayer(me.queryLayer);
                         $rootScope.$broadcast('queryStatusChanged');
@@ -402,6 +404,10 @@ define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'ol.popup'],
                     $rootScope.$broadcast('vectorSelectorCreated', me.selector);
 
                     if (Base.queryActive) OlMap.map.addInteraction(me.selector);
+
+                    document.addEventListener('ol-popup-closed', function(e){
+                        me.selector.getFeatures().clear();
+                    })
 
                     $rootScope.$on('queryStatusChanged', function(){
                         if (Base.queryActive) OlMap.map.addInteraction(me.selector);

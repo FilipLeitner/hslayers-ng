@@ -695,8 +695,6 @@ define(['angular', 'angular-gettext', 'translations', 'ol', 'map', 'proj4'],
                         }
                     };
 
-                    $templateCache.removeAll();
-
                     if (me.exists('hs.sidebar.controller') /*&& me.puremapApp != true*/) {
                         me.sidebarExpanded = true;
                     }
