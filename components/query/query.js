@@ -162,13 +162,13 @@ define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'ol.popup'],
                         if (me.queryActive) return;
                         me.queryActive = true;
                         map.addLayer(me.queryLayer);
-                        $rootScope.$broadcast('queryStatusChanged');
+                        $rootScope.$broadcast('queryStatusChanged', true);
                     };
                     this.deactivateQueries = function () {
                         if (!me.queryActive) return;
                         me.queryActive = false;
                         map.removeLayer(me.queryLayer);
-                        $rootScope.$broadcast('queryStatusChanged');
+                        $rootScope.$broadcast('queryStatusChanged', false);
                     };
 
                     function pointClickedStyle(feature) {
@@ -399,7 +399,11 @@ define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'ol.popup'],
 
                     this.selector = new ol.interaction.Select({
                         condition: ol.events.condition.click,
-                        multi: (angular.isDefined(Config.query) && Config.query.multi) ? Config.query.multi : false
+                        multi: (angular.isDefined(Config.query) && Config.query.multi) ? Config.query.multi : false,
+                        filter: function(feature, layer){
+                            if (layer.get('queryable') === false) return false;
+                            else return true;
+                        }
                     });
                     $rootScope.$broadcast('vectorSelectorCreated', me.selector);
 
