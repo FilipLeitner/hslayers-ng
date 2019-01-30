@@ -44,8 +44,8 @@ define(['angular'],
                     * @description Get code of current language
                     */
                     me.getCurrentLanguageCode = function () {
-                        if (typeof Core.language == 'undefined' || Core.language == '') return 'EN';
-                        return Core.language.substr(0, 2).toUpperCase();
+                        if (typeof Core.language == 'undefined' || Core.language == '') return 'en';
+                        return Core.language.toLowerCase();
                     }
 
                     /**

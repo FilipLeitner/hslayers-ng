@@ -2,8 +2,8 @@
  * @namespace hs.ows.wms
  * @memberOf hs.ows
  */
-define(['angular', 'ol', 'utils', 'moment-interval', 'moment'],
-    function(angular, ol, utils, momentinterval, moment) {
+define(['angular', 'ol'],
+    function(angular, ol) {
     
         /**
         * (PRIVATE) Select format for WFS service
@@ -289,8 +289,6 @@ define(['angular', 'ol', 'utils', 'moment-interval', 'moment'],
                         me.srsChanged();
                         me.data.services = caps.Capability.Layer;
 
-                        fillDimensionValues(caps.Capability.Layer);
-
                         me.data.getMapUrl = caps.Capability.Request.GetMap.DCPType[0].HTTP.Get.OnlineResource;
                         me.data.image_format = getPreferedFormat(me.data.image_formats, ["image/png; mode=8bit", "image/png", "image/gif", "image/jpeg"]);
                         me.data.query_format = getPreferedFormat(me.data.query_formats, ["application/vnd.esri.wms_featureinfo_xml", "application/vnd.ogc.gml", "application/vnd.ogc.wms_xml", "text/plain", "text/html"]);
@@ -299,17 +297,6 @@ define(['angular', 'ol', 'utils', 'moment-interval', 'moment'],
                     catch (e) {
                         $rootScope.$broadcast('wmsCapsParseError',e);
                     }
-                }
-
-                function fillDimensionValues(layer){
-                    angular.forEach(layer.Layer, function(layer){
-                        if(me.hasNestedLayers(layer)){
-                            fillDimensionValues(layer);
-                        }
-                        angular.forEach(layer.Dimension, function(dimension){
-                            dimension.values = me.getDimensionValues(dimension)
-                        })
-                    })
                 }
 
                 $rootScope.$on('ows.capabilities_received', function(event, response) {
@@ -367,35 +354,6 @@ define(['angular', 'ol', 'utils', 'moment-interval', 'moment'],
                         recurse(layer)
                     });
                     Core.setMainPanel('layermanager');
-                }
-
-                function prepareTimeSteps(step_string) {
-                    var step_array = step_string.split(',');
-                    var steps = [];
-                    for (var i = 0; i < step_array.length; i++) {
-                        if (step_array[i].indexOf('/') == -1) {
-                            steps.push(new Date(step_array[i]).toISOString());
-                            //console.log(new Date(step_array[i]).toISOString());
-                        } else {
-                            //"2016-03-16T12:00:00.000Z/2016-07-16T12:00:00.000Z/P30DT12H"
-                            var interval_def = step_array[i].split('/');
-                            var step = momentinterval.interval(interval_def[2]);
-                            var interval = momentinterval.interval(interval_def[0] + '/' + interval_def[1]);
-                            while (interval.start() < interval.end()) {
-                                //console.log(interval.start().toDate().toISOString());
-                                steps.push(interval.start().toDate().toISOString());
-                                interval.start(momentinterval.utc(interval.start().toDate()).add(step.period()));
-                            }
-                        }
-                    }
-                    return steps;
-                }
-
-                me.getDimensionValues = function(dimension){
-                    if(moment(dimension.default).isValid())
-                        return prepareTimeSteps(dimension.values)
-                    else
-                        return dimension.values.split(',');
                 }
 
                 me.hasNestedLayers = function(layer) {
@@ -529,8 +487,6 @@ define(['angular', 'ol', 'utils', 'moment-interval', 'moment'],
                 $scope.srsChanged = function(){
                     LayService.srsChanged();
                 }
-
-                $scope.getDimensionValues = LayService.getDimensionValues;
 
                 $scope.hasNestedLayers = LayService.hasNestedLayers;
             }
