@@ -205,7 +205,7 @@ define(['angular', 'ol', 'map', 'core', 'angular-sanitize', 'ol.popup'],
                 function ($rootScope, $sce, Base, OlMap, utils, Core) {
                     var me = this;
 
-                    var InfoCounter = 0;
+                    var infoCounter = 0;
 
                     this.request = function (url, infoFormat, coordinate, layer) {
                         var req_url = utils.proxify(url, true);
