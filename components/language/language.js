@@ -58,7 +58,7 @@ define(['angular'],
                     me.listAvailableLanguages = function () {
                         var language_code_name_map = { "en": 'English', cs: "Český", "fr_FR": 'Français', "lv_LV": 'Latviski', "nl": 'Nederlands' }
                         var langs = [{ key: "en", name: 'English' }];
-                        for (key in gettextCatalog.strings) {
+                        for (var key in gettextCatalog.strings) {
                             if (gettextCatalog.strings.hasOwnProperty(key)) {
                                 langs.push({ key: key, name: language_code_name_map[key] });
                             }

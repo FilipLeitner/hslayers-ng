@@ -506,9 +506,9 @@ define(['angular', 'app', 'permalink', 'ol'], function (angular, app, permalink,
                         OlMap.visible_layers = permalink.getParamValue('visible_layers').split(';');
                     }
                     OlMap.init();
-                    hs_x = permalink.getParamValue('hs_x');
-                    hs_y = permalink.getParamValue('hs_y');
-                    hs_z = permalink.getParamValue('hs_z');
+                    var hs_x = permalink.getParamValue('hs_x');
+                    var hs_y = permalink.getParamValue('hs_y');
+                    var hs_z = permalink.getParamValue('hs_z');
                     if (hs_x && hs_x != 'NaN' && hs_y && hs_y != 'NaN' && hs_z && hs_z != 'NaN') {
                         OlMap.moveToAndZoom(parseFloat(hs_x), parseFloat(hs_y), parseInt(hs_z));
                     }

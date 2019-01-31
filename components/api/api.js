@@ -56,7 +56,7 @@ define(['angular', 'ol', 'app', 'map', 'core'],
                             var has_indexes = !(obj && typeof obj.length === 'undefined');
                             console.log(levels, key + (has_indexes ? '' : '.'));
                             if (!has_indexes) {
-                                for (key in obj) {
+                                for (var key in obj) {
                                     recurseObject(obj[key], levels);
                                 }
                             }
@@ -64,7 +64,7 @@ define(['angular', 'ol', 'app', 'map', 'core'],
                     }
 
                     me.printApiDefinitions = function() {
-                        for (key in window.hslayers_api) {
+                        for (var key in window.hslayers_api) {
                             recurseObject(window.hslayers_api[key], '');
                         }
                     }

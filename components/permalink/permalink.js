@@ -234,7 +234,7 @@ define(['angular', 'angular-socialshare', 'map', 'core', 'status_creator', 'comp
                     
                     var paramTimer = null;
                     me.updateCustomParams = function(params) {
-                        for (param in params) {
+                        for (var param in params) {
                             me.customParams[param] = params[param];
                         }
                         if (paramTimer != null) clearTimeout(paramTimer);
