@@ -332,6 +332,19 @@ define(['angular', 'ol', 'angular-material', 'map', 'layermanager'],
                     };
 
                     $scope.$emit('scope_loaded', "featureList");
+
+                    $scope.map.on('singleclick', function(e) {
+
+                        let feature = $scope.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                                return feature;
+                            });
+                        if (feature) {
+                            $scope.toggleFeatureDetails(feature);
+                        }
+                    });
+                        
+
+                    
                 }
             ]);
 
