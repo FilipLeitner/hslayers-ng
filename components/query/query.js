@@ -18,6 +18,11 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     // templateUrl: config.infopanel_template || `${hsl_path}components/layout/partials/infopanel${config.design || ''}.html?bust=${gitsha}`,
                 };
             }])
+            .directive('hs.queryList.directive', ['config', function (config) {
+                return {
+                    templateUrl:`${hsl_path}components/query/partials/infolist${config.design || ''}.html?bust=${gitsha}`,
+                };
+            }])
 
             /**
             * @ngdoc directive
@@ -121,7 +126,7 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     };
 
                     this.clearData = function () {
-                        me.data.attributes.length = 0;
+                       me.data.attributes.length = 0;
                         me.data.groups.length = 0;
                         me.data.coordinates.length = 0;
                         $("#invisible_popup").contents().find('body').html('');
@@ -401,7 +406,19 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     });
                     $rootScope.$broadcast('vectorSelectorCreated', me.selector);
 
-                    if (Base.queryActive) OlMap.map.addInteraction(me.selector);
+                    $rootScope.$on('map.loaded', function (e){
+                        if (Base.queryActive) OlMap.map.addInteraction(me.selector);
+                        
+                        // //query namiesto Layman
+                        // let ftrs = OlMap.map.getLayers().getArray()[1];
+                        // let src = ftrs.getSource();
+                        // let fecury = src.on('change', function(evt){
+                        //     var source=evt.target;
+                        //     if(source.getState() === 'ready'){
+                        //         console.log(src.getFeatures());
+                        //     }
+                        // });
+                    })
 
                     $rootScope.$on('queryStatusChanged', function(){
                         if (Base.queryActive) OlMap.map.addInteraction(me.selector);
@@ -419,11 +436,11 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                         //deprecated
                         $rootScope.$broadcast('infopanel.feature_deselected', e.element);
                     });
-
                     $rootScope.$on('queryClicked', function (e) {
                         Base.clearData();
                         if (!Base.queryActive) return;
                         Base.data.attributes.length = 0;
+                        
                         var features = me.selector.getFeatures().getArray();
                         angular.forEach(features, function (feature) {
                             getFeatureAttributes(feature);
@@ -485,14 +502,18 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                         if (angular.isUndefined(layer) || angular.isDefined(layer.get('show_in_manager')) && layer.get('show_in_manager') === false) return;
                         var layerName = layer.get("title") || layer.get("name");
                         var group = {
+                            feature: feature,
+                            source: layer,
                             layer: layerName,
                             name: "Feature",
                             attributes: attributes
                         };
                         Base.setData(group, 'groups');
-                        $rootScope.$broadcast('queryVectorResult');
+                        $rootScope.$broadcast('queryVectorResult',{group});
                     }
                 }])
+
+                
             .controller('hs.query.controller', ['$scope', '$rootScope', 'hs.map.service', 'hs.query.baseService', 'hs.query.wmsService', 'hs.query.vectorService', 'Core', 'config', '$mdDialog', '$mdToast',
                 function ($scope, $rootScope ,OlMap, Base, WMS, Vector, Core, config, $mdDialog, $mdToast) {
                     var popup = new ol.Overlay.Popup();
@@ -591,5 +612,71 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     });
 
                     $scope.$emit('scope_loaded', "Query");
-                }]);
+                }])
+
+            //BP   
+            .controller('hs.query_list.controller', ['$scope', 'hs.map.service', 'Core', 'hs.feature_filter.service', 'hs.layermanager.service', 'config', 'hs.query.baseService', 'hs.query.vectorService',
+            function($scope, OlMap, Core, service, LayMan, config, base, vector) {
+                window.scope = $scope;
+                $scope.map = OlMap.map;
+                $scope.LayMan = LayMan;
+                $scope.displayDetails = false;
+                console.log($scope);
+
+                $scope.closeDetail = function(){
+                    OlMap.map.getView().animate({
+                        zoom:   4
+                    })
+                    $scope.displayDetails = !$scope.displayDetails;
+                    $scope.selectedFeature.setStyle(null);
+                    $scope.selectedFeature = false;
+                    console.log(OlMap);
+                    //change the mapview ? (zoom etc)
+                };
+                $scope.toggleFeatureDetails = function(feature) {
+                    $scope.displayDetails = !$scope.displayDetails;
+                    if ($scope.selectedFeature) $scope.selectedFeature.setStyle(null);
+
+                    if ($scope.displayDetails) {
+                        $scope.featureDetails = feature.values_;
+                        $scope.selectedFeature = feature;
+                        OlMap.map.getView().animate({
+                            center: [feature.values_.geometry.flatCoordinates[0], feature.values_.geometry.flatCoordinates[1]],
+                            zoom:7
+                        })
+                        //OlMap.moveToAndZoom(feature.values_.geometry.flatCoordinates[0], feature.values_.geometry.flatCoordinates[1], 7);
+                        feature.setStyle(new ol.style.Style({
+                            image: new ol.style.Icon(({
+                                crossOrigin: 'anonymous',
+                                src: 'marker_lt.png',
+                                anchor: [0.5, 1],
+                                scale: 0.4,
+                            }))
+                        }))
+                    }
+                };
+
+            $scope.$on('queryClicked', function(event) {
+                if (vector.selector.getFeatures().getArray()){
+                    feature = vector.selector.getFeatures().getArray();
+                    console.log(feature[0])
+                        if (feature[0].getGeometry() instanceof ol.geom.Point){
+                            if($scope.selectedFeature){
+                                if($scope.selectedFeature == feature[0]){
+                                    console.log("rovn")
+                                    $scope.closeDetail();
+                                }
+                                else {
+                                    $scope.displayDetails = !$scope.displayDetails;
+                                    $scope.toggleFeatureDetails(feature[0]); //what if there are more features
+                                }
+                            }
+                            else {
+                                $scope.toggleFeatureDetails(feature[0]);
+                            }
+                        }
+                }
+            });
+            }]);
+            // $scope.$emit('scope_loaded', "featureList");
     });
