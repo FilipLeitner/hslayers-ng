@@ -8,26 +8,26 @@
     </md-list-item>
 </md-list> -->
 
-<md-content class="md-padding card-collection" ng-show="!displayDetails">
+<md-content class="md-padding card-collection">
     <!-- <div flex-xs flex-gt-xs="50" layout="column"> -->
-    <md-card ng-repeat="feature in LayMan.currentLayer.filteredFeatures" ng-click="toggleFeatureDetails(feature)">
+    <md-card ng-repeat="feature in LayMan.currentLayer.filteredFeatures" ng-click="attrs(feature)">
         <img ng-src="{{ 'thumb/' + feature.values_.img }}" class="md-card-image" alt="Best Practice thumbnail">
         <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">{{ feature.values_.name }}</span>
-                <span class="md-subhead">{{ feature.values_.region }}, {{ feature.values_.country }}</span>
+                <span class="md-headline">{{ feature.queryFields.title }}</span>
+                <span class="md-subhead">{{ feature.queryFields.subtitle }}</span>
             </md-card-title-text>
         </md-card-title>
         <md-card-content>
             <p>
-                {{ feature.values_.annotation }} 
+                {{ feature.queryFields.description }} 
             </p>
         </md-card-content>
     </md-card>
     <!-- </div> -->
 </md-content>
 
-
+<!-- 
 <md-toolbar class="md-hue-1" ng-show="displayDetails">
     <div class="md-toolbar-tools">
         <h2 class="md-flex">{{ featureDetails.name }}</h2>
@@ -61,4 +61,4 @@
 
     <h3>Other benefits</h3>
     <p>{{ featureDetails.other_benefits }}</p>
-</md-content>
+</md-content> -->

@@ -166,6 +166,7 @@ define(['angular', 'ol', 'angular-material', 'map', 'layermanager'],
                         }
 
                         layer.filteredFeatures = filteredFeatures;
+                        $rootScope.$broadcast('featuresFiltered', filteredFeatures);
                         return filteredFeatures;
                     },
 

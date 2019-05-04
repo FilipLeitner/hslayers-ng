@@ -1,4 +1,36 @@
-<div class="card panel-default mainpanel">
+<!-- <md-content class="md-padding card-collection" ng-show="!displayDetails">
+    <md-card ng-repeat="feature in LayMan.currentLayer.filteredFeatures" ng-click="toggleFeatureDetails(feature)">
+        <img ng-src="{{ 'thumb/' + feature.values_.img }}" class="md-card-image" alt="Best Practice thumbnail">
+        <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">{{ feature.queryFields.title }}</span>
+                <span class="md-subhead">{{ feature.queryFields.subtitle }}</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content>
+            <p>
+                {{ feature.queryFields.description }} 
+            </p>
+        </md-card-content>
+    </md-card>
+</md-content> -->
+
+<!-- len pokusy -->
+<section >
+    <div class="row" ng-repeat="feature in vector.queryFeatures" ng-click="toggleFeatureDetails(feature)" ng-show="!displayDetails"> 
+        <div class="col-lg-6">
+            <div class="card" >
+                <!-- <img class="img-fluid rounded" ng-src="{{ 'thumb/' + feature.values_.img }}" alt="Card image cap"> -->
+                <div class="card-body">
+                    <h5 class="card-title">{{ feature.queryFields.title }}</h5>
+                    <p class="card-text">{{ feature.queryFields.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="card panel-default mainpanel" ng-show="displayDetails"> 
     <div class="card-header" translate>Info
         <button type="button" class="close" ng-click="Core.closePanel(this)">
             <span aria-hidden="true">×</span>

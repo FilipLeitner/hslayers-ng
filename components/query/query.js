@@ -12,9 +12,9 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
             * @memberOf hs.query
             * @description Display Infopanel with query results
             */
-            .directive('hs.query.directiveInfopanel', ['config', function (config) {
+            .directive('hs.query.directive', ['config', function (config) {
                 return {
-                    templateUrl: config.infopanel_template || `${hsl_path}components/query/partials/infopanel${config.design || ''}.html?bust=${gitsha}`,
+                    templateUrl: config.infopanel_template || `${hsl_path}components/query/partials/infopanel.html?bust=${gitsha}`,
                     // templateUrl: config.infopanel_template || `${hsl_path}components/layout/partials/infopanel${config.design || ''}.html?bust=${gitsha}`,
                 };
             }])
@@ -396,9 +396,10 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     });
 
                 }])
-            .service('hs.query.vectorService', ['$rootScope', 'hs.query.baseService', '$sce', 'hs.map.service', 'config',
-                function ($rootScope, Base, $sce, OlMap, Config) {
+            .service('hs.query.vectorService', ['$rootScope', 'hs.query.baseService', '$sce', 'hs.map.service', 'config','hs.layermanager.service',
+                function ($rootScope, Base, $sce, OlMap, Config, LayMan) {
                     var me = this;
+                    this.queryFeatures = [];
 
                     this.selector = new ol.interaction.Select({
                         condition: ol.events.condition.click,
@@ -408,17 +409,63 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
 
                     $rootScope.$on('map.loaded', function (e){
                         if (Base.queryActive) OlMap.map.addInteraction(me.selector);
-                        
-                        // //query namiesto Layman
-                        // let ftrs = OlMap.map.getLayers().getArray()[1];
-                        // let src = ftrs.getSource();
-                        // let fecury = src.on('change', function(evt){
-                        //     var source=evt.target;
-                        //     if(source.getState() === 'ready'){
-                        //         console.log(src.getFeatures());
-                        //     }
-                        // });
+
+                        let layers = OlMap.map.getLayers().getArray();
+                        let count=0;
+                        //check all layers if hsQueryFields avalaible
+                        for (let i =0; i<layers.length;i++){
+                            if (layers[i].values_.hsQueryFields){
+                                let queryFields = layers[i].values_.hsQueryFields
+                                count = 0;
+                                let src = layers[i].getSource();
+                        //listenerKey
+                                src.on('change', function(evt){
+                                    if(src.getState() === 'ready' && count == 0){
+                                        // src.forEachFeature(function(feature){
+                                        //     console.log(queryFields)
+                                        // })
+                                        let features = src.getFeatures();
+                        //check for fields specified in config for each feature avaliable
+                                        Object.keys(queryFields).forEach(function(queryKey){
+                                            
+                                            features.forEach(function(feature){
+                                                if (!feature.queryFields){
+                                                feature.queryFields = {title: "",
+                                                                       subtitle: "",
+                                                                       description:""};
+                                                }
+                                                let keys = Object.keys(feature.values_)
+                                                keys.forEach(function(fieldKey){
+                                                    if(fieldKey == queryFields[queryKey]){
+                                                        feature.queryFields[queryKey] = feature.values_[fieldKey];
+                                                    }
+                                                })
+                                            })
+                                        
+                                        })
+                                        features.forEach(function(feature){
+                                            me.queryFeatures.push(feature)
+                                        })
+                                        count++
+                                    }
+                                })
+                            }
+   
+                        }
+
                     })
+                    // $rootScope.$on('featuresFiltered', function (e,features) { //iný sposob ako
+                    //     console.log(features)
+                    //     features.forEach(function(feature){
+                    //         let keys = Object.keys(feature.values_)
+                    //             for (let k=0;k<keys.length;k++){
+                    //                 if (keys[k]){
+                    //                     console.log(keys[k])
+                    //                 } // to v query tak sa to da do zvlast objektu a z toho sa
+                    //             }
+                    //     })
+
+                    // })
 
                     $rootScope.$on('queryStatusChanged', function(){
                         if (Base.queryActive) OlMap.map.addInteraction(me.selector);
@@ -437,13 +484,13 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                         $rootScope.$broadcast('infopanel.feature_deselected', e.element);
                     });
                     $rootScope.$on('queryClicked', function (e) {
+                        console.log("1")
                         Base.clearData();
                         if (!Base.queryActive) return;
                         Base.data.attributes.length = 0;
-                        
                         var features = me.selector.getFeatures().getArray();
                         angular.forEach(features, function (feature) {
-                            getFeatureAttributes(feature);
+                            me.getFeatureAttributes(feature);
                         });
                     });
 
@@ -453,7 +500,8 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     * @params {Object} feature Selected feature from map
                     * (PRIVATE) Handler for querying vector layers of map. Get information about selected feature.
                     */
-                    function getFeatureAttributes(feature) {
+                     this.getFeatureAttributes = function (feature) {
+                        console.log("atributy")
                         var attributes = [];
                         feature.getKeys().forEach(function (key) {
                             if (key == 'gid' || key == 'geometry') return;
@@ -504,9 +552,9 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                         var group = {
                             feature: feature,
                             source: layer,
-                            layer: layerName,
-                            name: "Feature",
-                            attributes: attributes
+                            layer: layerName, //
+                            name: "Feature",    //
+                            attributes: attributes  //
                         };
                         Base.setData(group, 'groups');
                         $rootScope.$broadcast('queryVectorResult',{group});
@@ -514,24 +562,40 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                 }])
 
                 
-            .controller('hs.query.controller', ['$scope', '$rootScope', 'hs.map.service', 'hs.query.baseService', 'hs.query.wmsService', 'hs.query.vectorService', 'Core', 'config', '$mdDialog', '$mdToast',
-                function ($scope, $rootScope ,OlMap, Base, WMS, Vector, Core, config, $mdDialog, $mdToast) {
+            .controller('hs.query.controller', ['$scope', '$rootScope', 'hs.map.service', 'hs.query.baseService', 'hs.query.wmsService', 'hs.query.vectorService', 'Core', 'config', '$mdDialog', '$mdToast','hs.layermanager.service',
+                function ($scope, $rootScope ,OlMap, Base, WMS, Vector, Core, config, $mdDialog, $mdToast, LayMan) {
                     var popup = new ol.Overlay.Popup();
-
+                    $scope.data = Base.data;
+                    $scope.LayMan = LayMan;
                     if (OlMap.map) 
                         OlMap.map.addOverlay(popup);
                     else
                         $rootScope.$on('map.loaded', function () {
                             OlMap.map.addOverlay(popup);
                         });
-
+                        
+                    // $scope.attrs = function(feature) {
+                    //     Base.clearData();
+                    //     Vector.getFeatureAttributes(feature);
+                    //     $scope.showQueryDialog();
+                    // }
                     $scope.showQueryDialog = function(ev) {
+                        // let feature = $scope.data.groups[0].feature;
+                        // feature.setStyle(new ol.style.Style({
+                        //     image: new ol.style.Icon(({
+                        //         crossOrigin: 'anonymous',
+                        //         src: 'marker_lt.png',
+                        //         anchor: [0.5, 1],
+                        //         scale: 0.4,
+                        //     }))
+                        // }))
+
                         $mdDialog.show({
                             scope: this,
                             preserveScope: true,
                             templateUrl: config.infopanel_template || `${hsl_path}components/query/partials/infopanel${config.design || ''}.html`,
                             parent: angular.element(document.body),
-                            targetEvent: ev,
+                            // targetEvent: ev,
                             clickOutsideToClose: true
                         })
                         .then(function() {
@@ -542,10 +606,10 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     };
 
                     $scope.cancelQueryDialog = function() {
+                        // let feature = $scope.data.groups[0].feature;
+                        // feature.setStyle(config.default_layers[1].style);
                         $mdDialog.cancel();
                     };
-                    
-                    $scope.data = Base.data;
 
                     $rootScope.$on('queryStatusChanged', function() {
                         if (Base.queryActive) {
@@ -620,9 +684,18 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                 window.scope = $scope;
                 $scope.map = OlMap.map;
                 $scope.LayMan = LayMan;
+                $scope.vector = vector;
+                $scope.data = base.data;
                 $scope.displayDetails = false;
-                console.log($scope);
-
+               
+                console.log(vector.queryFeatures)
+                if (Core.current_panel_queryable) {
+                    if (!base.queryActive) base.activateQueries();
+                }    
+                else {
+                    if (base.queryActive) base.deactivateQueries();
+                }
+   
                 $scope.closeDetail = function(){
                     OlMap.map.getView().animate({
                         zoom:   4
@@ -638,7 +711,8 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                     if ($scope.selectedFeature) $scope.selectedFeature.setStyle(null);
 
                     if ($scope.displayDetails) {
-                        $scope.featureDetails = feature.values_;
+                        base.clearData();
+                        vector.getFeatureAttributes(feature);
                         $scope.selectedFeature = feature;
                         OlMap.map.getView().animate({
                             center: [feature.values_.geometry.flatCoordinates[0], feature.values_.geometry.flatCoordinates[1]],
@@ -668,7 +742,7 @@ define(['angular', 'ol', 'map', 'core', 'angular-material', 'angular-sanitize', 
                                 }
                                 else {
                                     $scope.displayDetails = !$scope.displayDetails;
-                                    $scope.toggleFeatureDetails(feature[0]); //what if there are more features
+                                    $scope.toggleFeatureDetails(feature[0]); 
                                 }
                             }
                             else {
