@@ -12,6 +12,11 @@
         <span class="sidebar-item-title" translate>Manage and Style Layers</span>
     </a>
 
+    <a href="#" class="sidebar-item list-group-item" ng-if="Core.exists('hs.query.controller') && Core.panelEnabled('info')" ng-click="setMainPanel('info')" ng-class="{active: Core.mainpanel == 'info'}">
+        <i class="menu-icon icon-details" data-toggle="tooltip" data-container="body" data-placement="auto" title="{{'Query Results Info'|translate}}"></i>
+        <span class="sidebar-item-title" translate>Query Results Info</span>
+    </a>
+
     <a href="#" class="sidebar-item list-group-item" ng-if="Core.exists('hs.legend.controller')" ng-click="setMainPanel('legend')" ng-class="{active: Core.mainpanel == 'legend'}">
         <span class="menu-icon legend-toolbtn">L</span>
         <span class="sidebar-item-title">Legend</span>

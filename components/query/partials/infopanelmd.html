@@ -1,74 +1,44 @@
-<md-dialog aria-label="Info">
-  <form>
-    <md-toolbar>
-      <div class="md-toolbar-tools">
-        <h2>Info</h2>
-        <span flex></span>
-        <md-button class="md-icon-button" ng-click="cancelQueryDialog()">
-          <md-icon md-icon-set="material-icons" aria-label="Close dialog">close</md-icon>
+
+<md-content >
+  <!-- <div flex-xs flex-gt-xs="50" layout="column"> -->
+  <md-card ng-repeat="feature in vector.queryFeatures" ng-show="!displayDetails" >
+      <img ng-src="{{ 'thumb/' + feature.values_.img }}" class="md-card-image" alt="Best Practice thumbnail" ng-click="toggleFeatureDetails(feature)"> 
+      <md-card-title >
+          <md-card-title-text>
+              <span ng-click="toggleFeatureDetails(feature)" class="md-headline">{{ feature.values_.name }} </span>
+              <span class="md-subhead">{{ feature.values_.region }}, {{ feature.values_.country }} 
+                <md-button aria-label="close" class="md-raised" ng-click="QueryDialogFromList(feature);">
+                    Detail
+                </md-button>
+              </span>
+          </md-card-title-text>
+      </md-card-title>
+      <md-card-content ng-click="toggleFeatureDetails(feature)" >
+          <p>
+              {{ feature.values_.annotation }} 
+          </p>
+      </md-card-content>
+  </md-card>
+  <!-- </div> -->
+</md-content>
+
+<md-toolbar class="md-hue-1" ng-show="displayDetails" ng-repeat="group in data.groups | orderBy : 'name'">
+    <div class="md-toolbar-tools">
+        <h2 class="md-flex">{{group.attributes[3].value}}</h2>
+
+        <div flex></div>
+
+        <md-button class="md-icon-button" aria-label="Close" ng-click="closeDetail()">
+            <md-icon md-menu-origin class="material-icons">close</md-icon>
         </md-button>
-      </div>
-    </md-toolbar>
-    <md-dialog-content style="max-width:800px;max-height:810px; min-width:40rem; min-height: 30rem;">
-      <md-tabs md-dynamic-height md-border-bottom md-swipe-content>
-        <md-tab ng-repeat="group in data.groups | orderBy : 'name'" label="{{group.name}}">
-          <md-content class="md-padding">
-            <h3 class="md-display-2">{{group.name}}</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Attribute</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="attribute in group.attributes | orderBy : 'name'">
-                  <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' class="first-col"></td>
-                  <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' value='{{attribute.value}}' class="second-col"></td>
-                </tr>
-              </tbody>
-            </table>
-          </md-content>
-        </md-tab>
-        <md-tab label="attributes" ng-show="data.attributes.length > 0">
-          <md-content class="md-padding">
-            <h3 class="md-display-2">Attributes</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Attribute</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="attribute in data.attributes | orderBy : 'name'">
-                  <td class="first-col">{{attribute.name}}</td>
-                  <td class="second-col" ng-bind-html="attribute.value"></td>
-                </tr>
-              </tbody>
-            </table>
-          </md-content>
-        </md-tab>
-        <md-tab label="coordinates" ng-show="data.coordinates[0].name.length > 0">
-          <md-content class="md-padding">
-            <h3 class="md-display-2">{{data.coordinates[0].name}}</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Projection</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="projection in data.coordinates[0].projections | orderBy : 'name'">
-                  <td class="first-col">{{projection.name}}</td>
-                  <td class="second-col" ng-bind-html="projection.value"></td>
-                </tr>
-              </tbody>
-            </table>
-          </md-content>
-        </md-tab>
-      </md-tabs>
-    </md-dialog-content>
-  </form>
-</md-dialog>
+    </div>
+</md-toolbar>
+<md-content ng-repeat="group in data.groups | orderBy : 'name'">
+  <div ng-show="displayDetails" ng-repeat="attribute in group.attributes | orderBy : 'name'" layout-padding> 
+    <div md-whiteframe="10"  class="md-list-item-text" layout="row" layout-align="start start">
+        <span flex="30" style="overflow-wrap: break-word;">{{attribute.name}}</span>
+        <span flex="5"></span>
+        <span  flex="65" style="text-align:justify">{{attribute.value}}</span>
+    </div>
+  </div>
+</md-content>

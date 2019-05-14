@@ -15,34 +15,53 @@
     </md-card>
 </md-content> -->
 
-<!-- len pokusy -->
-<section >
-    <div class="row" ng-repeat="feature in vector.queryFeatures" ng-click="toggleFeatureDetails(feature)" ng-show="!displayDetails"> 
-        <div class="col-lg-6">
-            <div class="card" >
-                <!-- <img class="img-fluid rounded" ng-src="{{ 'thumb/' + feature.values_.img }}" alt="Card image cap"> -->
-                <div class="card-body">
-                    <h5 class="card-title">{{ feature.queryFields.title }}</h5>
-                    <p class="card-text">{{ feature.queryFields.description }}</p>
+<div class="card panel-default mainpanel" ng-show="!displayDetails">
+    <div class="card-header" translate>Info Panel
+        <button type="button" class="close" ng-click="Core.closePanel(this)">
+            <span aria-hidden="true">×</span>
+            <span class="sr-only" translate>Close</span>
+        </button>
+    </div>
+    <div class="card-body" >
+        <div class="card-body" ng-repeat="feature in vector.queryFeatures" ng-click="toggleFeatureDetails(feature)">
+            <div class="form-group">
+                <h5 class="card-title">{{ feature.queryFields.title }}</h5>
+                <div class="embed-responsive embed-responsive-16by9">
+                    <img alt="Card image cap" class="card-img-top embed-responsive-item" ng-src="{{ 'thumb/' + feature.values_.img }}" />
                 </div>
+                <p style="margin-top:16px;" class="card-text text-justify">{{ feature.queryFields.description }}</p>
             </div>
         </div>
     </div>
-</section>
+</div>
+
+<!-- 
+<div  style="width:70%; padding-left: 15%" class="row card" ng-show="!displayDetails"> 
+    <div class="col-md-6" ng-repeat="feature in vector.queryFeatures" ng-click="toggleFeatureDetails(feature)" >
+        <div  >
+            <img  width="100%" class="img-fluid" ng-src="{{ 'thumb/' + feature.values_.img }}" alt="Card image cap"> 
+            <div class="card-body">
+                <h5 class="card-title">{{ feature.queryFields.title }}</h5>
+                <p class="card-text">{{ feature.queryFields.description }}</p>
+            </div>
+        </div>
+    </div>
+</div> -->
+
 
 <div class="card panel-default mainpanel" ng-show="displayDetails"> 
     <div class="card-header" translate>Info
-        <button type="button" class="close" ng-click="Core.closePanel(this)">
+        <button type="button" class="close" ng-click="closeDetail()">
             <span aria-hidden="true">×</span>
             <span class="sr-only" translate>Close</span>
         </button>
     </div>
     <div class="card-body">
         <table class="table table-compact" ng-repeat="group in data.groups | orderBy : 'name'">
-            <tr><th colspan="2">{{group.name}}</th></tr>
+            <tr><th colspan="2">{{group.attributes[3].value}}</th></tr>
             <tr ng-repeat="attribute in group.attributes | orderBy : 'name'">
-                <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' class="first-col" class="first-col"></td>
-                <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' value='{{attribute.value}}' class="second-col"></td>
+                <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' class="first-col"></td>
+                <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' value='{{attribute.value}}' class="second-col text-justify"></td>
             </tr>
         </table>
         <table class="table table-striped" style="table-layout:fixed" ng-show="data.attributes.length > 0">
@@ -55,3 +74,30 @@
     </div>
     <iframe id="invisible_popup" style="display:block; z-index:12122;left:-10000px; position:absolute"></iframe>
 </div>
+
+<!-- <div class="card panel-default mainpanel" ng-show="displayDetails"> 
+    <div class="card-header" translate>Info
+        <button type="button" class="close" ng-click="closeDetail()">
+            <span aria-hidden="true">×</span>
+            <span class="sr-only" translate>Close</span>
+        </button>
+    </div>
+    <div class="card-body">
+        <table class="table table-compact" ng-repeat="group in data.groups | orderBy : 'name'">
+            <tr><th colspan="2">{{group.attributes[3].value}}</th></tr>
+            <tr ng-repeat="attribute in group.attributes | orderBy : 'name'">
+                <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' class="first-col"></td>
+                <td hs.query.infovalue template='{{group.hstemplate}}' attribute='{{attribute.name}}' value='{{attribute.value}}' class="second-col text-justify"></td>
+            </tr>
+        </table>
+        <table class="table table-striped" style="table-layout:fixed" ng-show="data.attributes.length > 0">
+            <tr ng-repeat="attribute in data.attributes | orderBy : name"><td class="first-col">{{attribute.name}}</td><td class="second-col" ng-bind-html="attribute.value"></td></tr>
+        </table>
+        <table class="table table-striped" style="table-layout:fixed" ng-show="data.coordinates[0].name.length > 0">
+            <tr><th colspan="2">{{data.coordinates[0].name}}</th></tr>
+            <tr ng-repeat="projection in data.coordinates[0].projections | orderBy : name"><td class="first-col">{{projection.name}}</td><td class="second-col" ng-bind-html="projection.value"></td></tr>
+        </table>
+    </div>
+    <iframe id="invisible_popup" style="display:block; z-index:12122;left:-10000px; position:absolute"></iframe>
+</div> -->
+
