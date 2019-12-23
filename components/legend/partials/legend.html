@@ -1,12 +1,10 @@
 <div class="card panel-default mainpanel">
-    <div class="card-header"><translate>Legend</translate>
-        <button type="button" class="close" ng-click="Core.closePanel(this)">
-            <span aria-hidden="true">×</span>
-            <span class="sr-only">Close</span>
-        </button>
-    </div>
+    <hs.layout.panel-header panel-name="legend" panel-title="'Legend'||translate"></hs.layout.panel-header>
     <div class="card-body">
         <p><input type="text" class="form-control" placeholder="Filter:" ng-model="query.title"></p>
+        <span ng-if="noLayerExists()">
+            <p style="text-align: center">No layer with legend exists!</p>
+        </span>
         <ul class="list-group">
             <li ng-repeat="layer in layerDescriptors | filter:query" class="list-group-item" ng-show="isLegendable(layer)">
                 {{layer.title}}
@@ -16,7 +14,7 @@
         <div class="row justify-content-center">
             <div class="col col-md-2">
                 <button type="button" class="btn btn-light btn-outline ng-scope" title="{{'Reload'|translate}}"
-                    ng-click="refresh()">
+                    ng-click="">
                     <i class="glyphicon icon-refresh"></i>
                 </button>
             </div>

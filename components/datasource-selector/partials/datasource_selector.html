@@ -1,0 +1,90 @@
+<div class="card panel-default mainpanel">
+    <hs.layout.panel-header panel-name="datasource_selector" panel-title="'Datasources'||translate"></hs.layout.panel-header>
+    <div class="card-body">
+        <!--        <div ng-if="!Core.singleDatasources" ng-include="'./datasource_search.html'">
+            <div class="input-group col-lg-8 col-sm-12 col-xs-12" style="margin-bottom: 4px">
+                <input type="text" class="form-control hs-filter" placeholder="Filter:" ng-model="query.title" ng-change="queryCatalogs(datasources)">
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-secondary" ng-click='openMickaAdvancedSearch()' translate>More</button>
+                    <button type="button" class="btn btn-secondary" ng-click="clear()"><span aria-hidden="true" class="close">×</span><span class="sr-only"><translate>Clear</translate></span></button>
+                </span>
+            </div>
+        </div>-->
+
+        <ul class="nav flex-column flex-sm-row dss-tabs" role="tablist">
+            <li class="nav-item" ng-class="{'hs-tab-singleDS': Core.singleDatasources && !data.wms_connecting}"
+                ng-repeat="ds in data.datasets">
+                <a class="nav-link" ng-class="{'btn-primary': data.id_selected == 'ds'+$index}" href="#" data-target="{{'#ds'+$index}}" aria-controls="context" role="tab"
+                    data-toggle="tab" ng-click="datasetSelect('ds'+$index)">
+                    {{ds.title}}
+                    <span ng-show='ds.matched>0'>({{ds.matched}})</span>
+                    <span class="glyphicon icon-refresh icon-spin" ng-show="ds.loaded == false"></span>
+                </a>
+            </li>
+            <li class="nav-item" ng-if="Core.exists('hs.addLayers') && Core.singleDatasources"
+                ng-class="{'hs-tab-singleDS': Core.singleDatasources}">
+                <a class="nav-link" href="#" aria-controls="OWS" ng-class="{'btn-primary active': data.wms_connecting || data.id_selected == 'OWS'}" role="tab" ng-click="datasetSelect('OWS')" data-toggle="tab" translate>External
+                    data</a>
+            </li>
+        </ul><!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="hs-dataset-panel tab-pane"
+                ng-class="{'active': 'ds'+$index == data.id_selected && Core.singleDatasources && !data.wms_connecting}"
+                id="{{'ds'+$index}}" ng-repeat="ds in data.datasets">
+                <div class="card">
+                    <div class="card-body">
+                        <div ng-if="Core.singleDatasources">
+                            <hs.micka-filters-directive ng-if="ds.type == 'micka'" micka-dataset-config="{url: ds.url}"></hs.micka-filters-directive>
+                        </div>
+                        <ul class="list-group">
+                            <li ng-show='ds.layers.length == 0' class='list-group-item' translate>No results</li>
+                            <li ng-repeat="layer in ds.layers" class="clearfix"
+                                ng-class="'list-group-item'+(layer.highlighted ? ' active' : '')"
+                                ng-mouseover="DS.highlightComposition(layer, true)"
+                                ng-mouseleave="DS.highlightComposition(layer, false)">
+                                <span class="datasources_item">
+                                    <b><a href="#" data-toggle="tooltip" title="{{layer.description}}"
+                                            ng-click="showMetadata(ds, layer)">{{layer.title || layer.description}}</a></b>
+                                </span>
+                                <span class="float-right">
+                                    <a class="btn btn-sm btn-secondary" ng-href='{{DS.layerDownload(ds, layer)}}'
+                                        data-toggle="tooltip" title="{{'Download'|translate}}"
+                                        ng-show='DS.layerDownload(ds,layer) != "#"'><i
+                                            class="glyphicon icon-download"></i></a>
+                                    <a class="btn btn-sm btn-secondary" ng-href='{{DS.layerRDF(ds, layer)}}'
+                                        data-toggle="tooltip" title="GeoDCAT-AP" target="_blank"
+                                        ng-show='ds.type=="micka" && DS.layerRDF(ds, layer) != "#"'><i class="hs-icon-rdf"></i></a>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                        ng-click="addLayerToMap(ds, layer)" ng-hide='config.dss_disallow_add == true'
+                                        data-toggle="tooltip" title="{{'Add to map'|translate}}"><i
+                                            class="icon-plus"></i></button>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-footer" ng-show="ds.matched>0 && ds.type == 'micka'">
+                        <nav>
+                            <ul class="pagination d-flex justify-content-center" >
+                                <li class="page-item" ng-class="{'disabled': ds.start == 0 }">
+                                    <a href="#" class="page-link" ng-click='getPreviousRecords(ds)'><span
+                                            aria-hidden="true">&laquo;</span></a>
+                                </li>
+                                <li class="page-item" ng-if="ds.next != 0"><span class="page-link"> Results
+                                        {{ds.start + 1}} - {{ds.next}}</span></li>
+                                <li class="page-item" ng-if="ds.next == 0"><span class="page-link"> Results
+                                        {{ds.start + 1}} - {{ds.matched}}</span></li>
+                                <li class="page-item" ng-class="{'disabled': ds.next == 0 }">
+                                    <a href="#" class="page-link" ng-click='getNextRecords(ds)'><span
+                                            aria-hidden="true">&raquo;</span></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <hs.add-layers role="tabpanel" class="tab-pane"
+                ng-class="{'active': data.wms_connecting || data.datasources.length==0 || data.id_selected == 'OWS'}"
+                ng-if="Core.exists('hs.addLayers') && Core.singleDatasources" id="OWS"></hs.add-layers>
+        </div>
+    </div>
+</div>

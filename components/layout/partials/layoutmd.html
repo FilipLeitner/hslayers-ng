@@ -1,20 +1,14 @@
-<link rel="stylesheet" ng-href="{{Core.getNmPath()}}/angular-material/angular-material.css" type="text/css">
-<link rel="stylesheet" ng-href="{{Core.getNmPath()}}/angular-material-bottom-sheet-collapsible/bottomSheetCollapsible.css" type="text/css">
 <!-- Roboto Draft -->
 <!-- <link href='https://fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic' rel='stylesheet' type='text/css'> -->
 <!--Import Google Icon Font-->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" type="text/css" ng-href="{{hsl_path}}css/mobile.css" ng-if="importCss && !!window.cordova">
-<link rel="stylesheet" ng-if="importCss" ng-href="{{hsl_path}}css/app.css"/>
-<link rel="stylesheet" ng-if="importCss" ng-href="{{hsl_path}}css/whhg-font/css/whhg.css"/>
-
 <div hs.swipe-area.directive></div>
 <div hs.md-toolbar.directive></div>
 <section flex layout="row">
 	<div hs.md-sidenav.directive class="md-sidenav"></div>
 	<div flex id="map-container">
-		<div hs.map.directive ng-controller="hs.map.controller" ng-show="hs_map.visible" id="map" style="z-index:990"></div>
+		<div hs.map.directive ng-controller="hs.map.controller" ng-show="hs_map.visible" id="map" style="z-index:990" ng-style="mapStyle()"></div>
 		<div hs.md-overlay.directive class="map-floating-gui" id="gui"></div>
 	</div>
-	<div hs.md-right-panel.directive class="md-sidenav"></div>
+	<!--<div hs.md-right-panel.directive class="md-sidenav"></div>-->
 </section>

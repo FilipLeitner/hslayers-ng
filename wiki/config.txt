@@ -52,6 +52,10 @@ new ol.View({
 })
 ```
 
+**mapControls**
+
+Override list of openlayers controls to use on the map
+
 ## Layer manager
 
 **layer_order**
@@ -230,6 +234,11 @@ Boolean parameter to specify, that datasets must not be allowed to be added to m
 **createExtraMenu**
 
 A function which manipulates sidebar items and creates extra menu items by using AngularJs $compile function. Example: 
+
+**pureMap**
+
+Hide all GUI elements leaving only the map itself
+
 ```
 function ($compile, $scope, element) {
     $scope.uploadClicked = function () {
@@ -254,29 +263,34 @@ Boolean parameter to specify if panels can be dragged out of sidepanel.
 Boolean parameter True by default to specify if to import css files (openlayers.css, bootstrap.min.css, icon fonts). 
 Set this to false for webpack usage where css is imported/required specifically outside hsl.
 
-**infopanel_template**
+**panelWidths**
 
-Path to infopanel (getfeatureinfo) results template if an override of default template is needed. By default its ${hsl_path}components/query/partials/infopanel${config.design || ''}.html
+Dictionary for overriding of side panel widths for each of the main components. Example:
+{
+    compositions: 500
+}
 
-**layout_template**
+**panelsEnabled**
 
-Path to main application layout template if an override of default template is needed. By default it's ${hsl_path}components/layout/partials/layout${config.design || ''}.html
+Dictionary for overriding panel visibility. If module is loaded, then panel is visible by default:
+{
+    composition_browser: true,
+    toolbar: false,
+    mobile_settings: false,
+    draw: false,
+    datasource_selector: true,
+    layermanager: true,
+    print: true,
+    saveMap: true,
+    language: true,
+    permalink: true,
+    feature_crossfilter: true,
+    compositionLoadingProgress: false 
+}
 
-** overlay_template **
+**sizeMode**
 
-Path to overlay template which is used to show elements over map. By default it's hsl_path + 'components/layout/partials/overlay.html
-
-**right_panel_template**
-
-Path to Material Design specific right panel template if an override of default template is needed. By default it's hsl_path + 'components/layout/partials/right-panel.html
-
-**sidenav_template**
-
-Path to Material Design specific side nav panel template if an override of default template is needed. By default it's hsl_path + 'components/layout/partials/sidenav.html
-
-**toolbar_template**
-
-Path to Material Design specific toolbar template if an override of default template is needed. By default it's hsl_path + 'components/layout/partials/toolbar.html
+Possible values fullscreen, container. Default fullscreen
 
 **useIsolatedBootstrap**
 
@@ -319,13 +333,15 @@ String. Hashtag or any other text to append to title generated for sharing in so
 
 ## Senslog
 
-**senslog_url**
+**senslog**
 
-Senslog server URL. Example: http://portal.sdi4apps.eu/SensLog-VGI/rest/vgi
-
-**user_name**
-
-Senslog user name
+Object containing senslog configuration. 
+Example: {
+        url: 'http://foodie.lesprojekt.cz:8080',
+        user_id: 6, //Needed for senslogOT
+        group: 'test', //Needed for MapLogOT
+        user: 'test' //Needed for MapLogOT
+    }
 
 ## Other
 
@@ -339,13 +355,9 @@ DEPRECATED. Array of layers to be crossfilterable. Each element is an object whi
 }] 
 ```
 
-** hsl_path **
+**locationButtonVisible**
 
-Path of hslayers-ng to load templates from and require js files using requirejs. If a global variable hsl_path is set, then it is copied automatically to config.hsl_path.
-
-**paths**
-
-Dictionary of requirejs path overrides for all the components in hslayers-ng application. Can be usefull if some component needs to be substituted by third party component.
+Show or hide geolocation button on map. Possible values: true/false
 
 **queryPoint**
 
@@ -359,6 +371,9 @@ Boolean. Allow selecting and displaying info about multiple vector layer feature
 
 String to specify which search provider should be used. Can contain values: "sdi4apps_openapi", "geonames"
 
-**wirecloud_data_consumer**
+**useProxy**
+Weather to use proxy or not. Might be usefull in cordova apps, where proxying is not needed
 
-DEPRECATED. Function which gets executed on data_received_slot event. At the moment handling of that isnt done in hslayers, but in app.js instead. 
+**proxyPrefix**
+url to use for proxy. By default it's "/cgi-bin/hsproxy.cgi?", in which case url=... parameter is added to the get request.
+If other proxy service is used non-encoded url will be added directly to the proxyPrefix specified e.g. "/proxy/https://www.google.com" in case of "/proxy/"

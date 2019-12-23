@@ -1,0 +1,27 @@
+<div class="card panel-default mainpanel hs-stc-mainpanel">
+    <hs.layout.panel-header panel-name="saveMap" panel-title="'Save current map'||translate">
+        <extra-title>{{title || current_composition_title}}</extra-title>
+    </hs.layout.panel-header>
+    <div class="card-body">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend" id="type_label">
+                    <span class="input-group-text control-label" translate>Save to</span>
+                </div>
+                <select class="form-control" ng-model="endpoint">
+                    <option ng-repeat="endpoint in endpoints" ng-value="endpoint">{{endpoint.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div hs.save-map.directive_form ng-if="config.advanced_form"></div>
+        <div class="modal-footer" id="stc-footer" ng-if="config.advanced_form">
+            <button type="button" class="btn btn-primary" id="stc-save" ng-show="step=='end' && isAllowed() && compoData.id" translate=""
+                ng-click="save(false)">Overwrite</button>
+            <button type="button" class="btn btn-primary" id="stc-saveas" ng-show="step=='end' && isAllowed()" translate="" ng-click="save(true)">Save
+                as</button>
+            <button type="button" class="btn btn-primary btn-block" id="stc-next" ng-show="step!='end'" translate="" ng-click="next()">Next</button>
+            <a class="btn btn-secondary" ng-href="data:{downloadableData}" id="stc-download" ng-show="step=='end'" download="context.hsl" translate>Download</a>
+        </div>
+        <div hs.save-map.directive_simpleform ng-if="!config.advanced_form"></div>
+    </div>
+</div>

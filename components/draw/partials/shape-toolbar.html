@@ -1,0 +1,23 @@
+<div style="position: absolute; right: 5px; bottom: 6em;">
+    <div class="btn-group-sm btn-group">
+        <div class="btn-group-sm btn-group" ng-if="drawToolabrExpanded">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                ng-click="layersExpanded = !layersExpanded" aria-expanded="{{layersExpanded}}">
+                {{selectedLayerString()}}
+            </button>
+            <div class="dropdown-menu" ng-class="{'show': layersExpanded}">
+                <a class="dropdown-item" href="#" ng-repeat="layer in drawableLayers()"
+                    ng-click="selectLayer(layer)">{{layer.get('title')}}</a>
+            </div>
+        </div>
+        <button class="btn btn-secondary" ng-class="{active: service.type=='Point' }" ng-if="drawToolabrExpanded"
+            ng-click="setType('Point')" translate><i class="icon-pin"></i></button>
+        <button class="btn btn-secondary" ng-class="{active: service.type=='Polygon' }" ng-if="drawToolabrExpanded"
+            ng-click="setType('Polygon')" translate><i class="icon-polygonlasso"></i></button>
+        <button class="btn btn-secondary" ng-class="{active: service.type=='LineString' }" ng-if="drawToolabrExpanded"
+            ng-click="setType('LineString')" translate>
+            <i class="icon-line"></i></button>
+        <button class="btn btn-secondary" ng-click="toggleDrawToolbar()" translate>
+            <i ng-class="{'icon-pencil':!drawToolabrExpanded, 'icon-remove':drawToolabrExpanded}"></i></button>
+    </div>
+</div>
